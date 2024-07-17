@@ -12,7 +12,7 @@ export default function Home() {
     setVideoUrl("");
 
     try {
-      const response = await fetch("/api/video", {
+      const response = await fetch("/api/get-video", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,10 +25,11 @@ export default function Home() {
       if (response.ok) {
         setVideoUrl(data.videoUrl);
       } else {
-        setError(data.error || "An error occurred while fetching the video.");
+        setError(`API Error: ${data.error || response.statusText}`);
       }
     } catch (err) {
-      setError("An error occurred while processing your request.");
+      console.error("Fetch error:", err);
+      setError(`Network Error: ${(err as Error).message}`);
     }
   };
 
@@ -75,7 +76,12 @@ export default function Home() {
           </div>
         )}
 
-        {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
+        {error && (
+          <div className="mt-4 text-red-500 text-center">
+            <p>Error Details:</p>
+            <p>{error}</p>
+          </div>
+        )}
       </main>
     </div>
   );
